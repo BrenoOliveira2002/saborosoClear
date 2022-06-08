@@ -15,8 +15,9 @@ module.exports = {
                     body: req.body, 
                     error
                 })
-            }
+            
         }
+    }
     
 
         return new Promise ((resolve, reject) => {
@@ -52,5 +53,5 @@ module.exports = {
                 }
             }
         })
-        })
+        })}}
 
