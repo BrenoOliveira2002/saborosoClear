@@ -144,7 +144,13 @@
 
 <%- include("inc/admin-footer") -%>
 
-<script> 
+<script src= "/js/hcode-filereader.js"> </script> 
+
+<script>  
+
+new HcodeFileReader("#modal-create [type=file]", "#modal-create img")
+
+new HcodeFileReader("#modal-update [type=file]", "#modal-update img")
 
 let formCreate = document.querySelector("#modal-create form");
 
@@ -188,6 +194,8 @@ let formUpdate = document.querySelector("#modal-update form");
       switch (name) {
 
       case 'photo':
+
+      formUpdate.querySelector("img").src = '/' + data[name]
 
 
 
