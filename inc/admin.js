@@ -1,8 +1,8 @@
 module.exports = {
 
-    getMenus() {
+    getMenus(req) {
 
-        return [
+        let menus = [
         {
 
             text: "Tela Inicial",
@@ -52,5 +52,14 @@ module.exports = {
 
 
         ]
+
+        menus.map(menu => {
+
+            if (menu.href === `/admin${req.url}`) menu.active = true;
+
+
+        })
+
+        return menus
     }
 }
