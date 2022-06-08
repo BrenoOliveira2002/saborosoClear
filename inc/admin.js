@@ -1,5 +1,14 @@
 module.exports = {
 
+    getParams(req, params){
+
+       return Object.assing({},{
+
+        menus: req.menus,
+        user: req.session.user
+       }, params)
+    },
+
     getMenus(req) {
 
         let menus = [
