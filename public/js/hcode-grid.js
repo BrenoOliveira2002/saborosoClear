@@ -2,20 +2,54 @@ class HcodeGrid {
 
     constructor(configs) {
 
-        configs.listenners = Object.assign( {
+        configs.listenners = Object.assign({
 
-            afterUpdateClick:(e) => {
+            afterUpdateClick: (e) => {
 
                 $('#modal-update').modal('show');
-      
-            }
-        }, config.listenenrs)
 
-    this.options = Object.assign({}, {
-       formCreate: '#modal-create form',
-       formUpdate: '#modal-update form',
-       btnUpdate: '.btn-update',
-       btnDelete: '.btn-delete',
+            },
+            afterDeleteClick: (e) => {
+
+                window.location.reload();
+
+            },
+
+            afterFormCreate: (e) => {
+
+                window.location.reload()
+            },
+
+            afterFormUpdate: (e) => {
+
+                window.location.reload()
+            },
+
+
+           afterFormUpdate: (e) => {
+
+            window.location.reload()
+        },
+
+           afterFormCreateError: e => {
+
+              alert('Nao foi possivel enviar o formulario.')
+           },
+
+           afterFormUpdateError: e => {
+
+              alert('Nao foi possivel enviar o formulario.')
+           }
+    },
+
+
+            configs.listenenrs)
+
+        this.options = Object.assign({}, {
+            formCreate: '#modal-create form',
+            formUpdate: '#modal-update form',
+            btnUpdate: '.btn-update',
+            btnDelete: '.btn-delete',
         }, configs);
 
         this.initForms();
@@ -23,33 +57,34 @@ class HcodeGrid {
     }
 
 
-    initForms(){
+    initForms() {
 
 
         this.formCreate = document.querySelector(this.options.formCreate);
 
-  this.formCreate.save().then(json => {
-  
-    window.location.reload();
-     
-  }).catch(err => {
-  
-    console.log(err);
-  
-  });
+        this.formCreate.save().then(json => {
 
-  this.formUpdate = document.querySelector(this.options.formUpdate);
-  
-  
-  this.formUpdate.save().then(json => {
-  
-  window.location.reload();
-   
-  }).catch(err => {
-  
-  console.log(err);
-  
-  }); 
+            this.fireEvent('afterFormCreate');
+
+
+        }).catch(err => {
+
+            this.fireEvent('afterFormCreateError')
+            
+        });
+
+        this.formUpdate = document.querySelector(this.options.formUpdate);
+
+
+        this.formUpdate.save().then(json => {
+
+            this.fireEvent('afterFormUpdate');
+
+        }).catch(err => {
+
+            this.fireEvent('afterFormUpdateError')
+
+        });
 
 
     }
@@ -59,80 +94,80 @@ class HcodeGrid {
         if (typeof this.options.listenenrs[name] === 'function') this.options.listenners[name].apply(this, args)
     }
 
+    getTrData(e) {
+
+        let tr = e.path.find(el => {
+
+            return (el.tagName.toUpperCase() === 'TR')
+        })
+
+        return JSON.parse(tr.dataset.row);
+
+    }
+
     initButtons() {
 
 
-  [...document.querySelectorAll(this.options.btnUpdate)].forEach(btn => {
+        [...document.querySelectorAll(this.options.btnUpdate)].forEach(btn => {
 
-btn.addEventListener('click', e => {
+            btn.addEventListener('click', e => {
 
-    this.fireEvent('beforeUpdateClick',[e]);
+                this.fireEvent('beforeUpdateClick', [e]);
 
- let tr = e.path.find(el => {
+                let data = this.getTrData(e)
 
-    return (el.tagName.toUpperCase() === 'TR')
+                for (let name in data) {
 
+                    let input = this.formUpdate.querySelector(`[name=${name}]`)
 
-  })
-
-  let data = JSON.parse(tr.dataset.row);
-
-  for (let name in data) {
-
-    let input =  this.formUpdate.querySelector(`[name=${name}]`)
-
-    switch (name) {
-      
-
-    case 'date':
-
-    if (input) input.value = data[name].format('YYYY-MM-DD');
-
-    break;
-
-  default:
-
-    if (input) input.value = data[name];
-    }
-
-    this.fireEvent('afterUpdateClick',[e]);
-     
-  }
-
-})
-
-}),
+                    switch (name) {
 
 
-[...document.querySelectorAll(this.options.btnDelete)].forEach(btn => {
+                        case 'date':
 
-btn.addEventListener('click', e => {
-    
+                            if (input) input.value = data[name].format('YYYY-MM-DD');
 
-  let tr = e.path.find(el => {
+                            break;
 
-return (el.tagName.toUpperCase() === 'TR')
+                        default:
 
-})
+                            if (input) input.value = data[name];
+                    }
 
-let data = JSON.parse(tr.dataset.row);
+                    this.fireEvent('afterUpdateClick', [e]);
 
-if (confirm(eval('`' + this.options.deleteMsg + '`'))){ 
+                }
 
-fetch(eval('`' + this.options.deleteUrl + '`'), {
+            })
 
-method: 'DELETE'
-})
+        }),
 
-.then(response => response.json())
-.then(json => {
 
-window.location.reload();
-})
+            [...document.querySelectorAll(this.options.btnDelete)].forEach(btn => {
 
-  }
-})
+                btn.addEventListener('click', e => {
 
-})
+                    this.fireEvent('beforeDeleteClick');
+
+                    let data = this.getTrData(e)
+
+                    if (confirm(eval('`' + this.options.deleteMsg + '`'))) {
+
+                        fetch(eval('`' + this.options.deleteUrl + '`'), {
+
+                            method: 'DELETE'
+                        })
+
+                            .then(response => response.json())
+                            .then(json => {
+
+                                this.fireEvent('afterDeleteClick');
+
+                            })
+
+                    }
+                })
+
+            })
     }
 }
