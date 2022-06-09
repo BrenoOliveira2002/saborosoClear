@@ -215,6 +215,13 @@
   new HcodeGrid({
     deleteUrl: '/admin/reservations/${data.id}',
     deleteMsg: 'Deseja realmente excluir a reserva de ${data.name}?',
+    listenners: {
+        afterUpdateClick:(e) => {
+
+          $('#modal-update').modal('show');
+
+      },
+    }
   })
 
 </script>
