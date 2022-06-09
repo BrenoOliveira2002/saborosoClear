@@ -182,16 +182,15 @@ console.log(err);
 
   btn.addEventListener('click', e => {
 
-    if (confirm(`Deseja realmente excluir  o menu ${data.title} ?`)){
-
     let tr = e.path.find(el => {
 
 return (el.tagName.toUpperCase() === 'TR')
 
-
 })
 
-let data = JSON.parse(tr.dataset.row) 
+let data = JSON.parse(tr.dataset.row);
+
+if (confirm(`Deseja realmente excluir  o menu ${data.title} ?`)){ 
 
 fetch(`/admin/menus/${data.id}`, {
 
