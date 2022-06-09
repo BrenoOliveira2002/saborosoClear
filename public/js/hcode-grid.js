@@ -26,21 +26,21 @@ class HcodeGrid {
             },
 
 
-           afterFormUpdate: (e) => {
+            afterFormUpdate: (e) => {
 
-            window.location.reload()
+                window.location.reload()
+            },
+
+            afterFormCreateError: e => {
+
+                alert('Nao foi possivel enviar o formulario.')
+            },
+
+            afterFormUpdateError: e => {
+
+                alert('Nao foi possivel enviar o formulario.')
+            }
         },
-
-           afterFormCreateError: e => {
-
-              alert('Nao foi possivel enviar o formulario.')
-           },
-
-           afterFormUpdateError: e => {
-
-              alert('Nao foi possivel enviar o formulario.')
-           }
-    },
 
 
             configs.listenenrs)
@@ -70,7 +70,7 @@ class HcodeGrid {
         }).catch(err => {
 
             this.fireEvent('afterFormCreateError')
-            
+
         });
 
         this.formUpdate = document.querySelector(this.options.formUpdate);
@@ -118,25 +118,13 @@ class HcodeGrid {
 
                 for (let name in data) {
 
-                    let input = this.formUpdate.querySelector(`[name=${name}]`)
+                    this.options.onUpdateLoad(this.formUpdate, name, data);
 
-                    switch (name) {
-
-
-                        case 'date':
-
-                            if (input) input.value = data[name].format('YYYY-MM-DD');
-
-                            break;
-
-                        default:
-
-                            if (input) input.value = data[name];
-                    }
+                    
+                }
 
                     this.fireEvent('afterUpdateClick', [e]);
 
-                }
 
             })
 
