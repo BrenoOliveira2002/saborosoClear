@@ -40,16 +40,20 @@ class HcodeGrid {
 
                 alert('Nao foi possivel enviar o formulario.')
             }
-        },
-
-
-            configs.listenenrs)
+        },  configs.listenenrs)
 
         this.options = Object.assign({}, {
             formCreate: '#modal-create form',
             formUpdate: '#modal-update form',
             btnUpdate: '.btn-update',
             btnDelete: '.btn-delete',
+            onUpdateLoad: (form, name, data) => {
+
+                let input =  form.querySelector('[name='+name+']').value = data[value]
+
+               if (input) input.value = data[name]
+
+            }
         }, configs);
 
         this.initForms();
