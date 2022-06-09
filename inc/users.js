@@ -1,51 +1,46 @@
-const req = require("express/lib/request")
-const res = require("express/lib/response")
+
 var conn = require("./db")
-const { render } = require("./reservations")
 module.exports = {
 
-    login(email, password) {
+    render(req, res, error) {
 
-        render(){
+        res.render("admin/login", {
 
-            render(req, res, error)  {
+            body: req.body,
+            error
+        })
 
-                res.render("admin/login", {
+    },
 
-                    body: req.body, 
-                    error
-                })
-            
-        }
-    }
-    
-
-        return new Promise ((resolve, reject) => {
+    login(email, password) { 
 
 
-            conn.query(`
+        return new Promise((resolve, reject) => {
+
+
+        conn.query(`
 
             SELECT * FROM tb_users WHERE email = ? 
             
             `, [
-                email
-            ], (err, results) => {
+            email
+        ], (err, results) => {
 
-                if (err) {
+            if (err) {
 
-                    reject(err);
-                }else {
+                reject(err);
+            } else {
 
-                    if (!results.length > 0) {
+                if (!results.length > 0) {
+
+                    reject("Usuario ou senha incorretos")
+                } else {
+
+                    let row = results[0]
+
+                    if (row.password !== password) {
 
                         reject("Usuario ou senha incorretos")
-                    }else {
-
-                    let row = results [0]
-
-                    if (row.password !== password ) {
-
-                        reject("Usuario ou senha incorretos")        
                     } else {
 
                         resolve(row)
@@ -53,5 +48,100 @@ module.exports = {
                 }
             }
         })
-        })}}
+    })
+},
+
+getUsers() {
+
+    return new Promise((resolve, reject) => {
+
+        conn.query(`
+        SELECT * FROM tb_users ORDER BY title`,
+        (err, results) => {
+      
+          if (err) {
+      
+           reject(err)
+          }
+        resolve(results)
+       });
+      }); 
+    },
+
+    save(fields, files) {
+
+      return new Promise((resolve, reject) => {
+
+        let query, queryPhoto ='',  params = [
+
+          fields.name,
+          fields.email
+         ]
+
+        if (parseInt(fields.id) >0) {
+
+          params.push(fields.id)
+
+          query = `
+          UPDATE tb_users
+          SET name = ?,
+          email = ?,
+          WHERE id = ? 
+
+           `
+        } else {
+          query = `
+
+          INSERT INTO tb_users (name, email, password)
+        VALUES (?, ?, ?)
+
+          `
+          params.push(fields.password)
+        }
+
+        conn.query(query, params, (err, results) => {
+          if (err){
+
+            reject(err)
+
+          }else {
+
+            resolve(results)
+          }
+
+        })
+
+      })
+
+    },
+
+    delete(id) {
+
+      return new Promise((resolve, reject) => {
+
+        conn.query(`
+
+        DELETE FROM tb_users  WHERE id = ? 
+        
+        `[
+          id
+        ], (err, results) => {
+
+          if (err) {
+
+            reject(err)
+
+          } else {
+
+            resolve(results)
+
+          }
+
+        })
+        
+      })
+
+
+    }
+}
 
