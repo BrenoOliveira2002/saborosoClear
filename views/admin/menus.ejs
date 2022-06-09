@@ -156,8 +156,6 @@ new HcodeFileReader("#modal-update [type=file]", "#modal-update img")
 
 let formCreate = document.querySelector("#modal-create form");
 
-let formCreateData = new FormData(formCreate)
-
 formCreate.save().then(json => {
 
   window.location.reload();
@@ -180,11 +178,43 @@ console.log(err);
 
 });
 
+[...document.querySelectorAll('.btn-delete')].forEach(btn => {
+
+  btn.addEventListener('click', e => {
+
+    if (confirm(`Deseja realmente excluir  o menu ${data.title} ?`)){
+
+    let tr = e.path.find(el => {
+
+return (el.tagName.toUpperCase() === 'TR')
+
+
+})
+
+let data = JSON.parse(tr.dataset.row) 
+
+fetch(`/admin/menus/${data.id}`, {
+
+  method: 'DELETE'
+})
+
+.then(response => response.json())
+.then(json => {
+
+  window.location.reload();
+})
+
+    }
+  })
+
+}),
+
 [...document.querySelectorAll('.btn-update')].forEach(btn => {
 
   btn.addEventListener('click', e => {
 
-    e.path.find(el => {
+
+   let tr = e.path.find(el => {
 
       return (el.tagName.toUpperCase() === 'TR')
 

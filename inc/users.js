@@ -8,7 +8,7 @@ module.exports = {
 
         render(){
 
-            render(req, res, error) {
+            render(req, res, error)  {
 
                 res.render("admin/login", {
 
