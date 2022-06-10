@@ -40,7 +40,7 @@ class HcodeGrid {
 
                 alert('Nao foi possivel enviar o formulario.')
             }
-        },  configs.listenenrs)
+        }, configs.listenenrs)
 
         this.options = Object.assign({}, {
             formCreate: '#modal-create form',
@@ -49,9 +49,9 @@ class HcodeGrid {
             btnDelete: 'btn-delete',
             onUpdateLoad: (form, name, data) => {
 
-                let input =  form.querySelector('[name='+name+']').value = data[value]
+                let input = form.querySelector('[name=' + name + ']').value = data[value]
 
-               if (input) input.value = data[name]
+                if (input) input.value = data[name]
 
             }
         }, configs);
@@ -68,33 +68,37 @@ class HcodeGrid {
 
         this.formCreate = document.querySelector(this.options.formCreate);
 
-        this.formCreate.save({
+        if (this.formCreate) {
 
-            success: ()=> {
+            this.formCreate.save({
 
-                this.fireEvent('afterFormCreate');
-            },
+                success: () => {
 
-            failure: () => {
+                    this.fireEvent('afterFormCreate');
+                },
 
-                this.fireEvent('afterFormCreateError')
-            }
-        })
+                failure: () => {
+
+                    this.fireEvent('afterFormCreateError')
+                }
+            })
+        }
 
         this.formUpdate = document.querySelector(this.options.formUpdate);
 
-
+        if( this.formUpdate){
         this.formUpdate.save({
-            
-            success: ()=> {
+
+            success: () => {
 
                 this.fireEvent('afetFormUpdate')
             },
-            failure:()=>{
+            failure: () => {
 
                 this.fireEvent('afterFormUpdateError')
             }
         })
+        }
 
 
     }
@@ -115,7 +119,7 @@ class HcodeGrid {
 
     }
 
-    btnUpdateClick(e) { 
+    btnUpdateClick(e) {
 
         this.fireEvent('beforeUpdateClick', [e]);
 
@@ -125,10 +129,10 @@ class HcodeGrid {
 
             this.options.onUpdateLoad(this.formUpdate, name, data);
 
-            
+
         }
 
-            this.fireEvent('afterUpdateClick', [e]);
+        this.fireEvent('afterUpdateClick', [e]);
 
     }
 
@@ -166,17 +170,17 @@ class HcodeGrid {
 
                 btn.addEventListener('click', e => {
 
-                        if (e.target.classList.contains(this.options.btnUpdate)){
+                    if (e.target.classList.contains(this.options.btnUpdate)) {
 
-                            this.btnUpdateClick(e);
-                        } else if (e.target.classList.contains(this.options.btnDelete)){
+                        this.btnUpdateClick(e);
+                    } else if (e.target.classList.contains(this.options.btnDelete)) {
 
-                            this.btnDeleteClick(e)
+                        this.btnDeleteClick(e)
 
-                        }else {
+                    } else {
 
-                            this.fireEvent('buttonClick', [e.target, this.getTrData(e), e])
-                        }
+                        this.fireEvent('buttonClick', [e.target, this.getTrData(e), e])
+                    }
                 })
             })
         });
