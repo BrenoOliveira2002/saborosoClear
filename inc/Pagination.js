@@ -7,18 +7,18 @@ class Pagination {
         query,
         params = [],
         itensPerPage = 10
-    ){
+    ) {
 
         this.query = query
         this.params = params
         this.itensPerPage = itensPerPage
         this.currentPage = 1
-        
+
     }
 
-    getPage(page){
+    getPage(page) {
 
-        this.currentPage = page -1 ;
+        this.currentPage = page - 1;
 
         this.params.push(
 
@@ -35,8 +35,8 @@ class Pagination {
                     reject(err)
                 } else {
 
-                    this.data = results [0];
-                    this.total = results [1] [0].FOUND_ROWS
+                    this.data = results[0];
+                    this.total = results[1][0].FOUND_ROWS
                     this.totalPages = Math.ceil(this.total / this.itensPerPage);
                     this.currentPage++
 
@@ -48,33 +48,33 @@ class Pagination {
         })
     }
 
-    getTotal(){
+    getTotal() {
 
         return this.total;
 
     }
 
-    getCurrentPage(){
+    getCurrentPage() {
 
         return this.currentPage()
     }
 
-    getTotalPages(){
+    getTotalPages() {
 
         return this.totalPages
     }
 
-    getNavigation(params){
+    getNavigation(params) {
 
         let limitPagesNav = 5
         let links = [];
-        let nrstart = 0 
+        let nrstart = 0
         let nrend = 0
 
-        if (this.getTotalPages () < limitPagesNav) {
+        if (this.getTotalPages() < limitPagesNav) {
 
             limitPagesNav = this.getTotalPages();
-            
+
         }
 
         // if we are on the first pages
@@ -86,11 +86,11 @@ class Pagination {
 
         } // we're getting to the last pages
 
-        else if ((this.getCurrentPage() + parseInt(limitPagesNav/1)) > this.getTotalPages ) {
+        else if ((this.getCurrentPage() + parseInt(limitPagesNav / 1)) > this.getTotalPages) {
 
             nrstart = this.getTotalPages() - limitPagesNav
             nrend = this.getTotalPages()
-        
+
         } else {
 
             nrstart = this.getCurrentPage() - parseInt(limitPagesNav / 2)
@@ -101,17 +101,17 @@ class Pagination {
 
             links.push({
                 text: '<',
-                href: '?' + this.getQueryString(Object.assign({}, params, { page: this.getCurrentPage() -1 }))
+                href: '?' + this.getQueryString(Object.assign({}, params, { page: this.getCurrentPage() - 1 }))
             })
         }
 
-        for (let x = nrstart; x <= nrend; x++){
+        for (let x = nrstart; x <= nrend; x++) {
 
             links.push({
 
-                 text: x,
-                 href: '?' + this.getQueryString(Object.assign({}, params, {page: x})),
-                 active: (x === this.getCurrentPage())
+                text: x,
+                href: '?' + this.getQueryString(Object.assign({}, params, { page: x })),
+                active: (x === this.getCurrentPage())
             })
         }
 
@@ -119,7 +119,7 @@ class Pagination {
 
             links.push({
                 text: '>',
-                href: '?' + this.getQueryString(Object.assign({}, params, { page: this.getCurrentPage() +1 }))
+                href: '?' + this.getQueryString(Object.assign({}, params, { page: this.getCurrentPage() + 1 }))
             })
         }
 
@@ -132,7 +132,7 @@ class Pagination {
 
         let queryString = []
 
-        for(let name in params) {
+        for (let name in params) {
 
             queryString.push(`${name}=${params[name]}`)
         }
